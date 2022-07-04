@@ -35,24 +35,24 @@ def asph_parms ( Dia , boz , ael , bc ):
     return r0_asph , k_asph
 
 def calcs ():
-    st.subheader('Bifocal Design App for Dr. Habibzadeh Lab.')
-
+    st.header('Bifocal Design')
+    st.sidebar.header('Contact Lens Design App')
     st.sidebar.header('Input Parameters')
 
     def user_input ():
-        refindex = st.sidebar.text_input(label="RI" , value=1.43)
-        Dia = st.sidebar.text_input(label="Dia" , value=10.)
-        BC = st.sidebar.text_input(label="BC" , value=8.)
-        AEL = st.sidebar.text_input(label="AEL" , value=0.12)
-        BOZ = st.sidebar.text_input(label="BOZ" , value=8.2)
-        ct = st.sidebar.text_input(label="CT" , value=0.2)
-        et = st.sidebar.text_input(label="ET" , value=0.22)
-        FOZ1 = st.sidebar.text_input(label="FOZ 1" , value=3.0)
-        p1 = st.sidebar.text_input(label="Pwer 1" , value=3.0)
-        FOZ2 = st.sidebar.text_input(label="FOZ 2" , value=6.0)
-        p2 = st.sidebar.text_input(label="Pwer 2" , value=1.0)
+        refindex = st.sidebar.text_input(label="Refractive Index" , value=1.43)
+        Dia = st.sidebar.text_input(label="Diameter" , value=10.)
+        BC = st.sidebar.text_input(label="Base Curve" , value=8.)
+        AEL = st.sidebar.text_input(label="Axial Edge Lift" , value=0.12)
+        BOZ = st.sidebar.text_input(label="Back Optic Zone" , value=8.2)
+        ct = st.sidebar.text_input(label="Center Thickness" , value=0.2)
+        et = st.sidebar.text_input(label="Edge Thickness" , value=0.22)
+        FOZ1 = st.sidebar.text_input(label="Front Optic Zone 1 (Central)" , value=3.0)
+        p1 = st.sidebar.text_input(label="Power 1 (Central)" , value=3.0)
+        FOZ2 = st.sidebar.text_input(label="Front Optic Zone 2 (Peripheral)" , value=6.0)
+        p2 = st.sidebar.text_input(label="Power 2 (Peripheral)" , value=1.0)
         data = {'RI': refindex , 'Dia': Dia , 'BC': BC , 'AEL': AEL , 'BOZ': BOZ , 'CT': ct , 'ET': et , 'FOZ 1': FOZ1 ,
-                'power 1': p1 , 'FOZ 2': FOZ2 , 'power 2': p2}
+                'P1': p1 , 'FOZ 2': FOZ2 , 'P2': p2}
         features = pd.DataFrame(data , index=[0])
         return features
 
@@ -60,6 +60,7 @@ def calcs ():
     st.subheader('User inputs')
     st.write(df)
     df = df.to_numpy()[0]
+    st.sidebar.write('Created by paymanrajai@gmail.com')
 
     # vars
     RI = float(df[0])
@@ -129,15 +130,20 @@ def calcs ():
     # # ax.axis('equal')
     ax1.plot(x , -np.array(list(map(frontsag, x))) , color='r' , label='Anterior')
     ax1.plot(x , -np.array(list(map(backsag, x))) , color='b' , label='Posterior')
+    ax1.axvline(x= foz1/2, linestyle = '--', linewidth=0.8, color='g')
+    ax1.axvline(x= foz2/2, linestyle = '--', linewidth=0.8, color='g' )
     ax1.set_xlim([0 , Dia / 2])
     ax1.set_ylabel('Sag (mm)')
-    ax1.legend()
+    ax1.legend(loc = 'lower left')
 
 
     ax2.plot(x, np.array(list(map(thickness, x))), color='black')
     ax2.set_xlim([0 , Dia / 2])
     ax2.set_ylabel('Thickness (mm)')
     ax2.set_xlabel('Semi Chord (mm)')
+    ax2.axvline(x= foz1/2, linestyle = '--', linewidth=0.8, color='g', label = 'FOZ 1')
+    ax2.axvline(x= foz2/2, linestyle = '--', linewidth=0.8, color='g', label = 'FOZ 2' )
+    ax2.legend(loc = 'upper left')
 
 
     st.pyplot(fig)
@@ -147,6 +153,9 @@ def calcs ():
               'jt1': np.round(jt1, 2), 'jt2': np.round(jt2, 2)}
     output = pd.DataFrame(output , index=[0])
     st.table(output)
+    st.write('jt1 = junction thickness at FOZ 1')
+    st.write('jt2 = junction thickness at FOZ 2')
+
 
 if __name__ == '__main__':
     calcs()
