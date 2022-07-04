@@ -36,7 +36,7 @@ def asph_parms ( Dia , boz , ael , bc ):
 
 def calcs ():
     st.header('Bifocal Design')
-    st.sidebar.header('CL App for Dr. Habibzadeh Lab.')
+    st.sidebar.header('Contact Lens Design App')
     st.sidebar.header('Input Parameters')
 
     def user_input ():
@@ -130,15 +130,20 @@ def calcs ():
     # # ax.axis('equal')
     ax1.plot(x , -np.array(list(map(frontsag, x))) , color='r' , label='Anterior')
     ax1.plot(x , -np.array(list(map(backsag, x))) , color='b' , label='Posterior')
+    ax1.axvline(x= foz1/2, linestyle = '--', linewidth=0.8, color='g')
+    ax1.axvline(x= foz2/2, linestyle = '--', linewidth=0.8, color='g' )
     ax1.set_xlim([0 , Dia / 2])
     ax1.set_ylabel('Sag (mm)')
-    ax1.legend()
+    ax1.legend(loc = 'lower left')
 
 
     ax2.plot(x, np.array(list(map(thickness, x))), color='black')
     ax2.set_xlim([0 , Dia / 2])
     ax2.set_ylabel('Thickness (mm)')
     ax2.set_xlabel('Semi Chord (mm)')
+    ax2.axvline(x= foz1/2, linestyle = '--', linewidth=0.8, color='g', label = 'FOZ 1')
+    ax2.axvline(x= foz2/2, linestyle = '--', linewidth=0.8, color='g', label = 'FOZ 2' )
+    ax2.legend(loc = 'upper left')
 
 
     st.pyplot(fig)
